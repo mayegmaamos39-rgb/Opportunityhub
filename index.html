@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Opportunities Hub</title>
+
+<style>
+:root {
+    --navy: #142b52;
+    --blue: #2563eb;
+    --bg: #f5f7fb;
+    --line: #e2e8f0;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: var(--bg);
+    color: #17243a;
+    line-height: 1.5;
+}
+
+header {
+    background: white;
+    border-bottom: 1px solid var(--line);
+    position: sticky;
+    top: 0;
+}
+
+nav, main {
+    max-width: 1150px;
+    margin: auto;
+    padding: 14px 20px;
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.logo {
+    font-size: 23px;
+    font-weight: bold;
+    color: var(--navy);
+}
+
+.logo span {
+    color: var(--blue);
+}
+
+nav div:last-child {
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+}
+
+button {
+    cursor: pointer;
+    border: 0;
+    border-radius: 8px;
+    padding: 10px 13px;
+    font-weight: bold;
+}
+
+nav button {
+    background: transparent;
+    color: #334155;
+}
+
+nav button.active,
+nav button:hover {
+    background: #eaf1ff;
+    color: var(--blue);
+}
+
+main {
+    padding-top: 26px;
+    padding-bottom: 55px;
+}
+
+.section {
+    display: none;
+}
+
+.section.active {
+    display: block;
+}
+
+.hero {
+    padding: clamp(28px, 6vw, 65px);
+    border-radius: 20px;
+    background: linear-gradient(120deg, #142b52, #2862c8);
+    color: white;
+}
+
+.hero h1 {
+    font-size: clamp(34px, 5vw, 54px);
+    line-height: 1.1;
+    margin: 12px 0;
+}
+
+.hero p {
+    max-width: 650px;
+    color: #e5edff;
+}
+
+.btn {
+    display: inline-block;
+    text-decoration: none;
+    background: var(--blue);
+    color: white;
+    padding: 11px 15px;
+    border-radius: 8px;
+    font-weight: bold;
+}
+
+.btn.white {
+    background: white;
+    color: var(--navy);
+}
+
+.stats,
+.categories,
+.cards {
+    display: grid;
+    gap: 15px;
+    margin: 22px 0 36px;
+}
+
+.stats {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.stat,
+.category,
+.card {
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: 13px;
+    padding: 18px;
+}
+
+.stat strong {
+    display: block;
+    font-size: 27px;
+    color: var(--blue);
+}
+
+.categories {
+    grid-template-columns: repeat(4, 1fr);
+}
+
+.category {
+    cursor: pointer;
+    text-align: left;
+}
+
+.category b {
+    display: block;
+    margin: 8px 0;
+}
+
+.cards {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.card {
+    padding: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.card img,
+.placeholder {
+    width: 100%;
+    height: 165px;
+    object-fit: cover;
+    background: #eaf0fa;
+}
+
+.placeholder {
+    display: grid;
+    place-items: center;
+    font-size: 45px;
+}
+
+.cardbody {
+    padding: 17px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.tag {
+    background: #eaf1ff;
+    color: #2458b6;
+    border-radius: 30px;
+    padding: 4px 9px;
+    font-size: 12px;
+    font-weight: bold;
+    align-self: start;
+}
+
+.card h3 {
+    margin: 10px 0 3px;
+}
+
+.muted,
+.provider {
+    color: #64748b;
+    font-size: 14px;
+}
+
+.meta {
+    font-size: 13px;
+    margin: 4px 0;
+}
+
+.actions {
+    display: flex;
+    gap: 8px;
+    margin-top: auto;
+    padding-top: 15px;
+}
+
+.actions > * {
+    flex: 1;
+    text-align: center;
+    font-size: 13px;
+}
+
+.detail {
+    background: #edf2fa;
+    color: var(--navy);
+}
+
+.toolbar {
+    display: grid;
+    grid-template-columns: 1fr 200px;
+    gap: 10px;
+    margin: 15px 0;
+}
+
+.toolbar input,
+.toolbar select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font: inherit;
+    background: white;
+}
+
+.empty {
+    grid-column: 1 / -1;
+    background: white;
+    padding: 26px;
+    text-align: center;
+    border: 1px dashed #cbd5e1;
+    border-radius: 12px;
+    color: #64748b;
+}
+
+.info {
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 22px;
+    margin: 15px 0;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 5;
+    background: #06152ddd;
+    padding: 18px;
+    overflow: auto;
+}
+
+.modalbox {
+    background: white;
+    max-width: 700px;
+    margin: 30px auto;
+    padding: 25px;
+    border-radius: 14px;
+}
+
+.modalbox h3 {
+    font-size: 16px;
+    margin: 16px 0 3px;
+}
+
+.modalbox p {
+    white-space: pre-line;
+    color: #475569;
+    margin: 0;
+}
+
+.close {
+    float: right;
+    background: #edf2fa;
+}
+
+footer {
+    background: var(--navy);
+    color: white;
+    padding: 30px 20px;
+}
+
+footer p {
+    color: #d9e5f8;
+    font-size: 14px;
+}
+
+@media(max-width:850px) {
+    .cards {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .categories {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media(max-width:580px) {
+    .cards,
+    .categories,
+    .stats,
+    .toolbar {
+        grid-template-columns: 1fr;
+    }
+
+    nav {
+        align-items: flex-start;
+    }
+
+    nav div:last-child {
+        width: 100%;
+    }
+
+    nav button {
+        font-size: 12px;
+        padding: 8px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<nav>
+    <div class="logo">
+        Opportunities<span>Hub</span>
+    </div>
+
+    <div>
+        <button class="active" data-page="home">Home</button>
+        <button data-page="scholarships">Scholarships</button>
+        <button data-page="internships">Internships</button>
+        <button data-page="jobs">Jobs</button>
+        <button data-page="admissions">Admissions</button>
+    </div>
+</nav>
+</header>
+
+<main>
+
+<!-- HOME PAGE -->
+
+<section id="home" class="section active">
+
+    <div class="hero">
+        <small>OPPORTUNITIES FOR YOUR NEXT STEP  (DESIGN BY MAYEGMA AMOS!!)</small>
+
+        <h1>
+            Discover opportunities.<br>
+            Build your future.
+        </h1>
+
+        <p>
+            Explore scholarships, internships, jobs and university
+            admission research from one simple hub.
+        </p>
+
+        <button class="btn white"
+            onclick="go('scholarships')">
+            Explore scholarships
+        </button>
+
+        <button class="btn"
+            onclick="go('internships')">
+            Find internships
+        </button>
+    </div>
+
+    <div class="stats">
+        <div class="stat">
+            <strong id="nScholar">0</strong>
+            <span>Scholarships</span>
+        </div>
+
+        <div class="stat">
+            <strong id="nIntern">0</strong>
+            <span>Internships</span>
+        </div>
+
+        <div class="stat">
+            <strong id="nJob">0</strong>
+            <span>Jobs</span>
+        </div>
+    </div>
+
+    <h2>Explore by category</h2>
+
+    <div class="categories">
+
+        <button class="category"
+            onclick="go('scholarships')">
+            🎓
+            <b>Scholarships</b>
+            <span class="muted">Education funding</span>
+        </button>
+
+        <button class="category"
+            onclick="go('internships')">
+            🧑‍💻
+            <b>Internships</b>
+            <span class="muted">Gain experience</span>
+        </button>
+
+        <button class="category"
+            onclick="go('jobs')">
+            💼
+            <b>Jobs</b>
+            <span class="muted">Explore careers</span>
+        </button>
+
+        <button class="category"
+            onclick="go('admissions')">
+            🏫
+            <b>Admissions</b>
+            <span class="muted">University research</span>
+        </button>
+
+    </div>
+
+    <h2>Recently added</h2>
+
+    <div id="latest" class="cards"></div>
+
+</section>
+
+<!-- SCHOLARSHIPS -->
+
+<section id="scholarships" class="section">
+
+    <h2>Scholarship opportunities</h2>
+
+    <p class="muted">
+        Review requirements, benefits, deadlines and official sources.
+    </p>
+
+    <div class="toolbar">
+
+        <input id="q-scholarship"
+            placeholder="Search scholarships..."
+            oninput="render('scholarship')">
+
+        <select id="f-status"
+            onchange="render('scholarship')">
+
+            <option value="">All statuses</option>
+            <option>Open</option>
+            <option>Upcoming</option>
+            <option>Closed</option>
+
+        </select>
+
+    </div>
+
+    <div id="list-scholarship" class="cards"></div>
+
+</section>
+
+<!-- INTERNSHIPS -->
+
+<section id="internships" class="section">
+
+    <h2>Internship opportunities</h2>
+
+    <div class="toolbar">
+        <input id="q-internship"
+            placeholder="Search internships..."
+            oninput="render('internship')">
+    </div>
+
+    <div id="list-internship" class="cards"></div>
+
+</section>
+
+<!-- JOBS -->
+
+<section id="jobs" class="section">
+
+    <h2>Job opportunities</h2>
+
+    <div class="toolbar">
+        <input id="q-job"
+            placeholder="Search jobs..."
+            oninput="render('job')">
+    </div>
+
+    <div id="list-job" class="cards"></div>
+
+</section>
+
+<!-- ADMISSIONS -->
+
+<section id="admissions" class="section">
+
+    <h2>University admission research</h2>
+
+    <div class="info">
+        <h3>Details worth recording for each program</h3>
+
+        <ul>
+            <li>University and program name</li>
+            <li>Admission year and eligible SHS backgrounds</li>
+            <li>Required WASSCE subjects and grades</li>
+            <li>Published cut-off point, if available</li>
+            <li>Official source link and date checked</li>
+        </ul>
+    </div>
+
+    <div class="info">
+        <b>Important:</b>
+        Admission requirements can change.
+        This starter page is informational and does not calculate
+        or guarantee admission. Confirm with each university's
+        official admission notice.
+    </div>
+
+</section>
+
+</main>
+
+<!-- DETAILS POPUP -->
+
+<div id="modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="detailTitle"
+    onclick="if(event.target===this)closeDetail()">
+
+    <div class="modalbox">
+
+        <button class="close"
+            onclick="closeDetail()">
+            Close ✕
+        </button>
+
+        <div id="detailContent"
+            style="clear:both;padding-top:12px">
+        </div>
+
+    </div>
+</div>
+
+<!-- FOOTER -->
+
+<footer>
+    <div class="logo" style="color:white">
+        Opportunities<span>Hub</span>
+    </div>
+
+    <p>
+        Connecting students and job seekers with possibilities.
+    </p>
+
+    <p>
+        Verify eligibility, deadlines, benefits and application
+        links with the official provider.
+    </p>
+
+    <p>© 2026 Opportunities Hub</p>
+</footer>
+
+<script>
+
+// DEMO CONTENT ONLY.
+// Confirm every scholarship detail and application URL with the provider before relying on it.
+
+const opportunities = [
+    {
+    id: "getfund-undergraduate-2026",
+    type: "scholarship",
+
+    title: "Undergraduate Scholarship",
+
+    provider: "GETFUND GHANA",
+
+    location: "Ghana",
+
+    status: "Open",
+
+    deadline: "2026-11-27",
+
+    benefit: "Tuition fees\nAccommodation\nMonthly stipend\nTravel/airfare (foreign track)\nSometimes health insurance",
+
+    duration: "5th October to 27th November 2026",
+
+    description:
+        "Applications open Monday, 5th October 2026 and close Friday, 27th November 2026.",
+
+    eligibility:
+        "Be Ghanaian citizens\nHold an admission letter from an accredited institution (unconditional for foreign applicants)\nSubmit all required documents during the application window",
+
+    documents:
+        "List required documents from the official announcement.",
+        
+
+    instructions:
+        "Explain the verified application process.",
+
+    link: "https://scholarships.getfund.gov.gh",
+
+    sourceLink: "https://scholarships.getfund.gov.gh/",
+
+    image: "", // Add an image path such as images/getfund.jpg when you upload the image.
+
+    contact: "0552103221"
+}
+
+
+];
+
+
+// SAFELY DISPLAY TEXT
+
+function esc(value = "") {
+    return String(value).replace(/[&<>"']/g, char => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+    }[char]));
+}
+
+// CHECK URL
+
+function webURL(value) {
+    try {
+        const url = new URL(value);
+
+        return ["http:", "https:"].includes(url.protocol)
+            ? url.href
+            : "";
+
+    } catch {
+        return "";
+    }
+}
+
+// Accept safe relative image paths (for example images/getfund.jpg)
+// and absolute HTTP/HTTPS image URLs.
+function safeImagePath(value) {
+    const path = String(value || "").trim();
+    if (!path) return "";
+    if (/^https?:\/\//i.test(path)) return webURL(path);
+    if (/^(?:\.\.\/|\/)/.test(path) || /^[a-z][a-z0-9+.-]*:/i.test(path)) return "";
+    return path;
+}
+
+// DATE FORMAT: DD/MM/YY
+// Stored date: YYYY-MM-DD
+
+function formatDate(value) {
+
+    const match =
+        /^(\d{4})-(\d{2})-(\d{2})$/.exec(value || "");
+
+    if (!match) {
+        return "Not specified";
+    }
+
+    const day = match[3];
+    const month = match[2];
+    const year = match[1].slice(-2);
+
+    return `${day}/${month}/${year}`;
+}
+
+// NAVIGATION
+
+function go(id) {
+
+    document.querySelectorAll(".section")
+        .forEach(section => {
+            section.classList.toggle(
+                "active",
+                section.id === id
+            );
+        });
+
+    document.querySelectorAll("nav button")
+        .forEach(button => {
+            button.classList.toggle(
+                "active",
+                button.dataset.page === id
+            );
+        });
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+}
+
+document.querySelectorAll("nav button")
+    .forEach(button => {
+        button.addEventListener("click", () => {
+            go(button.dataset.page);
+        });
+    });
+
+// CREATE OPPORTUNITY CARD
+
+function card(item) {
+
+    const image = safeImagePath(item.image);
+    const apply = webURL(item.link);
+
+    const picture = image
+        ? `
+            <img
+                src="${esc(image)}"
+                alt="${esc(item.title)}"
+                loading="lazy"
+                onerror="this.hidden=true">
+          `
+        : `
+            <div class="placeholder">
+                ${
+                    item.type === "scholarship"
+                        ? "🎓"
+                        : item.type === "internship"
+                            ? "🧑‍💻"
+                            : "💼"
+                }
+            </div>
+          `;
+
+    return `
+        <article class="card">
+
+            ${picture}
+
+            <div class="cardbody">
+
+                <span class="tag">
+                    ${esc(item.type)}
+                </span>
+
+                <h3>${esc(item.title)}</h3>
+
+                <p class="provider">
+                    ${esc(item.provider)}
+                </p>
+
+                <p class="meta">
+                    <b>Location:</b>
+                    ${esc(item.location || "Not stated")}
+                </p>
+
+                <p class="meta">
+                    <b>Deadline:</b>
+                    ${esc(formatDate(item.deadline))}
+                </p>
+
+                <p class="meta">
+                    <b>Status:</b>
+                    ${esc(item.status || "Not stated")}
+                </p>
+
+                <p class="muted">
+                    ${esc(item.description || "")}
+                </p>
+
+                <div class="actions">
+
+                    <button class="detail"
+                        onclick="showDetail('${esc(item.id)}')">
+                        View details
+                    </button>
+
+                    ${
+                        apply
+                        ? `
+                            <a class="btn"
+                                href="${esc(apply)}"
+                                target="_blank"
+                                rel="noopener noreferrer">
+                                Apply / Visit
+                            </a>
+                          `
+                        : ""
+                    }
+
+                </div>
+
+            </div>
+        </article>
+    `;
+}
+
+// SEARCH AND FILTER
+
+function render(type) {
+
+    const search =
+        document.getElementById("q-" + type)
+            ?.value.toLowerCase().trim() || "";
+
+    let filtered = opportunities.filter(item =>
+        item.type === type
+    );
+
+    if (search) {
+        filtered = filtered.filter(item => {
+
+            const searchable = [
+                item.title,
+                item.provider,
+                item.location,
+                item.description,
+                item.eligibility
+            ].join(" ").toLowerCase();
+
+            return searchable.includes(search);
+        });
+    }
+
+    if (type === "scholarship") {
+
+        const status =
+            document.getElementById("f-status")?.value || "";
+
+        if (status) {
+            filtered = filtered.filter(item =>
+                item.status === status
+            );
+        }
+    }
+
+    document.getElementById("list-" + type).innerHTML =
+        filtered.length
+            ? filtered.map(card).join("")
+            : `<div class="empty">No matching listings found.</div>`;
+}
+
+// OPPORTUNITY DETAILS
+
+function showDetail(id) {
+
+    const item = opportunities.find(item =>
+        item.id === id
+    );
+
+    if (!item) {
+        console.error("Opportunity not found. Check that every listing has a unique id.", id);
+        return;
+    }
+
+    const fields = [
+        ["Provider", item.provider],
+        ["Location", item.location],
+        ["Status", item.status],
+        ["Deadline", formatDate(item.deadline)],
+        ["Benefit / salary / stipend", item.benefit],
+        ["Duration", item.duration],
+        ["Description", item.description],
+        ["Eligibility requirements", item.eligibility],
+        ["Required documents", item.documents],
+        ["Application instructions", item.instructions],
+        ["Contact information", item.contact]
+    ];
+
+    const link = webURL(item.link);
+    const source = webURL(item.sourceLink);
+
+    document.getElementById("detailContent").innerHTML = `
+
+        <span class="tag">${esc(item.type)}</span>
+
+        <h2 id="detailTitle">${esc(item.title)}</h2>
+
+        ${
+            fields.map(field => `
+                <h3>${esc(field[0])}</h3>
+                <p>${esc(field[1] || "Not specified")}</p>
+            `).join("")
+        }
+
+        <p style="margin-top:18px">
+
+            ${
+                link
+                ? `
+                    <a class="btn"
+                        href="${esc(link)}"
+                        target="_blank"
+                        rel="noopener noreferrer">
+                        Application website
+                    </a>
+                  `
+                : ""
+            }
+
+            ${
+                source
+                ? `
+                
+                    <a class="btn"
+                        style="background:#eaf1ff;color:#142b52"
+                        
+                        href="${esc(source)}"
+                        target="_blank"
+                        rel="noopener noreferrer">
+                        Information source
+                    </a>
+                  `
+                : ""
+            }
+
+        </p>
+    `;
+
+    document.getElementById("modal").style.display = "block";
+}
+
+function closeDetail() {
+    document.getElementById("modal").style.display = "none";
+}
+
+document.addEventListener("keydown", event => {
+    if (event.key === "Escape") closeDetail();
+});
+
+// UPDATE WEBSITE
+
+function update() {
+
+    render("scholarship");
+    render("internship");
+    render("job");
+
+    const counts = {
+        scholarship: 0,
+        internship: 0,
+        job: 0
+    };
+
+    opportunities.forEach(item => {
+        if (counts[item.type] !== undefined) {
+            counts[item.type]++;
+        }
+    });
+
+    document.getElementById("nScholar").textContent =
+        counts.scholarship;
+
+    document.getElementById("nIntern").textContent =
+        counts.internship;
+
+    document.getElementById("nJob").textContent =
+        counts.job;
+
+    document.getElementById("latest").innerHTML =
+        opportunities.slice(-3).reverse().map(card).join("")
+        || '<div class="empty">No listings added.</div>';
+}
+
+update();
+
+</script>
+
+</body>
+</html>
